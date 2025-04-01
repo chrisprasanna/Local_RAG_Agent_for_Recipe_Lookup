@@ -1,0 +1,6 @@
+langchain
+langchain-ollama
+pypdf
+unstructured
+requests
+beautifulsoup4
