@@ -10,34 +10,50 @@ logger = logging.getLogger(__name__)
 class AllRecipesScraper:
     @staticmethod
     def search(search_string):
-        base_url = "https://www.allrecipes.com/search?"
+        """
+        Search recipes parsing the returned HTML data.
+        """
+        # Valid search URL for AllRecipes
+        base_url = "https://www.allrecipes.com/search"
         query_url = urllib.parse.urlencode({"q": search_string})
-        url = base_url + query_url
+        url = f"{base_url}?{query_url}"
 
-        req = urllib.request.Request(url)
-        req.add_header('Cookie', 'euConsent=true')
+        try:
+            # Make the HTTP request
+            req = urllib.request.Request(url)
+            req.add_header('Cookie', 'euConsent=true')
 
-        handler = urllib.request.HTTPSHandler(context=ssl._create_unverified_context())
-        opener = urllib.request.build_opener(handler)
-        response = opener.open(req)
-        html_content = response.read()
+            # Handle HTTPS requests
+            handler = urllib.request.HTTPSHandler(context=ssl._create_unverified_context())
+            opener = urllib.request.build_opener(handler)
+            response = opener.open(req)
+            html_content = response.read()
 
-        soup = BeautifulSoup(html_content, 'html.parser')
-        search_data = []
-        articles = soup.find_all("a", {"class": "mntl-card-list-items"})
-        articles = [a for a in articles if a["href"].startswith("https://www.allrecipes.com/recipe/")]
+            # Parse the HTML content
+            soup = BeautifulSoup(html_content, 'html.parser')
+            search_data = []
 
-        for article in articles:
-            data = {}
-            try:
-                data["name"] = article.find("span", {"class": "card__title"}).get_text().strip()
-                data["url"] = article['href']
-            except Exception as e:
-                logger.error(f"Error parsing article: {e}")
-            if data:
-                search_data.append(data)
+            # Updated selector for recipe links
+            articles = soup.find_all("a", {"class": "comp card__titleLink"})
+            articles = [a for a in articles if a["href"].startswith("https://www.allrecipes.com/recipe/")]
 
-        return search_data
+            for article in articles:
+                data = {}
+                try:
+                    data["name"] = article.find("span", {"class": "card__title-text"}).get_text().strip()
+                    data["url"] = article['href']
+                except Exception as e:
+                    logger.error(f"Error parsing article: {e}")
+                if data:
+                    search_data.append(data)
+
+            if not search_data:
+                logger.error("No recipes found.")
+            return search_data
+
+        except Exception as e:
+            logger.error(f"Error fetching search results: {e}")
+            return []
 
     @classmethod
     def get(cls, url):
