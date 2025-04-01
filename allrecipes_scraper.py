@@ -24,7 +24,7 @@ class AllRecipesScraper:
 
         soup = BeautifulSoup(html_content, 'html.parser')
         search_data = []
-        articles = soup.findAll("a", {"class": "mntl-card-list-items"})
+        articles = soup.find_all("a", {"class": "mntl-card-list-items"})
         articles = [a for a in articles if a["href"].startswith("https://www.allrecipes.com/recipe/")]
 
         for article in articles:
