@@ -46,8 +46,9 @@ def fetch_recipe_from_allrecipes(query):
 
         # Parse the search results page
         soup = BeautifulSoup(response.text, "html.parser")
-        recipe_link = soup.select_one(".card__titleLink")
+        recipe_link = soup.select_one("a.card__titleLink")
         if not recipe_link:
+            logger.error("No recipe links found on the search results page.")
             return None, None, None, None
 
         recipe_url = recipe_link["href"]
@@ -58,7 +59,7 @@ def fetch_recipe_from_allrecipes(query):
         recipe_soup = BeautifulSoup(recipe_response.text, "html.parser")
 
         # Extract recipe title
-        title = recipe_soup.select_one(".headline.heading-content").get_text(strip=True)
+        title = recipe_soup.select_one("h1.headline.heading-content").get_text(strip=True)
 
         # Extract ingredients
         ingredients = recipe_soup.select(".ingredients-item")
@@ -74,6 +75,8 @@ def fetch_recipe_from_allrecipes(query):
         )
 
         return title, ingredients_list, instructions_list, recipe_url
+    except requests.exceptions.HTTPError as http_err:
+        logger.error(f"HTTP error occurred: {http_err}")
     except Exception as e:
         logger.error(f"Error fetching recipe: {e}")
         return None, None, None, None
