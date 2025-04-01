@@ -40,7 +40,7 @@ def fetch_recipe_from_allrecipes(query):
     """
     try:
         # Search for recipes on allrecipes.com
-        search_url = f"https://www.allrecipes.com/search/results/?search={query}"
+        search_url = f"https://www.allrecipes.com/search?q={query}"
         response = requests.get(search_url)
         response.raise_for_status()
 
