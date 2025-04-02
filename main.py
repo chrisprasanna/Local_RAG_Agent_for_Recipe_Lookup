@@ -5,7 +5,6 @@ import logging
 from fastapi import FastAPI
 import uvicorn
 from threading import Thread
-import time
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -17,7 +16,8 @@ model = OllamaLLM(
 
 # Create a template for the chat prompt to format the recipe response
 template = """
-You are an expert chef and you are looking for a recipe to cook. You want to cook a dish that is easy to make and is healthy.
+You are an expert chef and you are looking for a recipe to cook.
+You want to cook a dish that is easy to make and is healthy.
 Format your responses using Markdown syntax.
 
 Question: {question}
@@ -38,14 +38,17 @@ chain = prompt | model
 # Initialize FastAPI app for health check
 app = FastAPI()
 
+
 @app.get("/health")
 async def health_check():
     """Health check endpoint for Docker and monitoring systems."""
     return {"status": "healthy"}
 
+
 def start_api_server():
     """Start the FastAPI server in a separate thread."""
     uvicorn.run(app, host="0.0.0.0", port=8080)
+
 
 def main():
     # Start the FastAPI server in a separate thread
@@ -63,7 +66,8 @@ def main():
                 break
 
             # Fetch a recipe from allrecipes.com
-            title, ingredients, instructions, link = fetch_recipe_from_allrecipes(question)
+            title, ingredients, instructions, link = \
+                fetch_recipe_from_allrecipes(question)
             if not title:
                 print("\nNo recipes found. Please try a different query.")
                 continue
