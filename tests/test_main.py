@@ -5,7 +5,7 @@ from allrecipes_scraper import fetch_recipe_from_allrecipes, AllRecipesScraper
 class TestRecipeChatbot(unittest.TestCase):
     def test_search_recipes(self):
         # Test searching for recipes with a valid query
-        search_results = fetch_recipe_from_allrecipes("chicken")
+        search_results = AllRecipesScraper.search("chicken")
         self.assertIsNotNone(search_results)
         # We can't guarantee the exact number of results, but we can check if it's a list
         self.assertIsInstance(search_results, list)
