@@ -63,7 +63,7 @@ jobs:
         with:
           context: .
           tags: recipe-chatbot:latest
-          outputs: type=docker, dtest=/tmp/recipe-chatbot.tar
+          outputs: type=docker, dest=/tmp/recipe-chatbot.tar
           cache-from: type=gha
           cache-to: type=gha, mode=max
       - name: Test Docker image
