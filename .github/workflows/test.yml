@@ -49,7 +49,7 @@ jobs:
     # Run tests
     - name: Run tests
       run: |
-        python -m pytests tests/
+        python -m pytest tests/
 
   docker-build:
     runs-on: ubuntu-latest
