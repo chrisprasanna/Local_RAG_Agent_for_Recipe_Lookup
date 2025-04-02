@@ -2,6 +2,10 @@ from langchain_ollama.llms import OllamaLLM
 from langchain_core.prompts import ChatPromptTemplate
 from allrecipes_scraper import fetch_recipe_from_allrecipes
 import logging
+from fastapi import FastAPI
+import uvicorn
+from threading import Thread
+import time
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -28,11 +32,26 @@ Instructions:
 
 Link: {link}
 """
-
 prompt = ChatPromptTemplate.from_template(template)
 chain = prompt | model
 
+# Initialize FastAPI app for health check
+app = FastAPI()
+
+@app.get("/health")
+async def health_check():
+    """Health check endpoint for Docker and monitoring systems."""
+    return {"status": "healthy"}
+
+def start_api_server():
+    """Start the FastAPI server in a separate thread."""
+    uvicorn.run(app, host="0.0.0.0", port=8080)
+
 def main():
+    # Start the FastAPI server in a separate thread
+    api_thread = Thread(target=start_api_server, daemon=True)
+    api_thread.start()
+
     print("\n# Welcome to the Cooking Recipe Chatbot!\n")
     print("\nThis chatbot will help you find a cooking recipe that is easy to make and healthy.")
     print("\nType 'q' to quit.\n")

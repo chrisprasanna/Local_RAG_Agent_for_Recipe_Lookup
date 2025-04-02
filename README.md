@@ -36,8 +36,8 @@ python -m venv venv
 ### 3. Install Dependencies
 Install the required Python libraries using pip:
 ```bash
-python.exe -m pip install --upgrade pip
-pip install -r [requirements.txt](http://_vscodecontentref_/0)
+python -m pip install --upgrade pip
+python -m pip install -r [requirements.txt](http://_vscodecontentref_/0)
 ```
 
 ### 4. Pull the Required Ollama Models
