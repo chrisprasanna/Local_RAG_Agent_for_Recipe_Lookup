@@ -8,7 +8,7 @@ class TestRecipeChatbot(unittest.TestCase):
         search_results = fetch_recipe_from_allrecipes("chicken")
         self.assertIsNotNone(search_results)
         # We can't guarantee the exact number of results, but we can check if it's a list
-        self.assertGreater(search_results, list)
+        self.assertIsInstance(search_results, list)
 
     def test_fetch_recipe(self):
         # Mock the search results to ensure consistent test behavior
